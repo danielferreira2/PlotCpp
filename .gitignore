@@ -1,0 +1,12 @@
+# Ignorar diretórios de compilação
+/Bin/
+/Obj/
+
+# Ignorar arquivos de compilação
+*.o
+*.out
+*.exe
+
+# Ignorar configurações do editor
+.vscode/
+*.code-workspace
