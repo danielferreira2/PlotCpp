@@ -9,7 +9,7 @@ Scatter::Scatter(
     xAxisName(xAxisName), yAxisName(yAxisName),
     xScale(xScale), yScale(yScale),
     xStep(xStep), yStep(yStep),
-    AXIS_MARGIN(50){    
+    AXIS_MARGIN(50){
 
     const int AXIS_THICKNESS = 2;
     const int LABEL_SIZE = 15;
@@ -51,33 +51,19 @@ void Scatter::draw(sf::RenderWindow& window) {
     window.draw(yAxisLabel);
 
     drawScales(window);
+    drawPoints(window);
+    drawLegends(window);
+}
 
+void Scatter::drawPoints(sf::RenderWindow& window) {
     for (const auto& set : pointSets) {
-        for (const auto& point : set.points) {
+        for (const auto& point : set.second.points) {
             window.draw(point);
         }
     }
-
-    drawLegends(window);
- 
 }
 
-void Scatter::addSetOfPoints(const std::vector<std::pair<float, float>>& points, sf::Color color, const std::string& legendName) {
-    PointSet pointSet;
-    pointSet.color = color;
-    pointSet.legendName = legendName;
-
-    for (const auto& p : points) {
-        sf::CircleShape point(5.0f); // tamanho do ponto
-        point.setFillColor(color); // cor do ponto
-        point.setPosition(map(p.first, p.second));
-        pointSet.points.push_back(point);
-    }
-    pointSets.push_back(pointSet);
-}
-
-
-void Scatter::drawLegends(sf::RenderWindow& window){
+void Scatter::drawLegends(sf::RenderWindow& window) {
     const int LEGEND_BOX_SIZE = 10;
     const int LEGEND_TEXT_SIZE = 12;
     sf::Text legendText;
@@ -88,11 +74,11 @@ void Scatter::drawLegends(sf::RenderWindow& window){
     float legendY = AXIS_MARGIN;
     for (const auto& set : pointSets) {
         sf::RectangleShape legendBox(sf::Vector2f(LEGEND_BOX_SIZE, LEGEND_BOX_SIZE));
-        legendBox.setFillColor(set.color);
+        legendBox.setFillColor(set.second.color);
         legendBox.setPosition(width - AXIS_MARGIN + 10, legendY);
         window.draw(legendBox);
 
-        legendText.setString(set.legendName);
+        legendText.setString(set.first);
         legendText.setPosition(width - AXIS_MARGIN + 10 + LEGEND_BOX_SIZE + 5, legendY - (LEGEND_TEXT_SIZE / 4));
         window.draw(legendText);
 
@@ -100,6 +86,31 @@ void Scatter::drawLegends(sf::RenderWindow& window){
     }
 }
 
+void Scatter::addSetOfPoints(const std::string& legendName, std::vector<Point>& points, sf::Color color) {
+    PointSet pointSet;
+    pointSet.color = color;
+
+    for (const auto& p : points) {
+        sf::CircleShape point(5.0f); // tamanho do ponto
+        point.setFillColor(color); // cor do ponto
+        point.setPosition(map(p.first, p.second));
+        pointSet.points.push_back(point);
+    }
+    pointSets[legendName] = pointSet;
+}
+
+void Scatter::updatePoints(const std::string& legendName, std::vector<Point>& points) {
+    auto it = pointSets.find(legendName);
+    if (it != pointSets.end()) {
+        it->second.points.clear();
+        for (const auto& p : points) {
+            sf::CircleShape point(5.0f); // tamanho do ponto
+            point.setFillColor(it->second.color); // cor do ponto
+            point.setPosition(map(p.first, p.second));
+            it->second.points.push_back(point);
+        }
+    }
+}
 
 sf::Vector2f Scatter::map(float x, float y) {
     float x1 = AXIS_MARGIN + (x / xScale) * (width - 2 * AXIS_MARGIN);
@@ -116,7 +127,6 @@ void Scatter::drawScales(sf::RenderWindow& window) {
     label.setCharacterSize(LABEL_SIZE);
     label.setFillColor(sf::Color::White);
 
-    //Desenha os divisões do eixo x
     for (float x = 0; x <= xScale; x += xStep) {
         float xPos = AXIS_MARGIN + (x / xScale) * (width - 2 * AXIS_MARGIN);
         sf::Vector2f tickPos(xPos, height - AXIS_MARGIN);
@@ -131,7 +141,6 @@ void Scatter::drawScales(sf::RenderWindow& window) {
         window.draw(label);
     }
 
-    //Desenha os divisões do eixo y
     for (float y = 0; y <= yScale; y += yStep) {
         float yPos = height - AXIS_MARGIN - (y / yScale) * (height - 2 * AXIS_MARGIN);
         sf::Vector2f tickPos(AXIS_MARGIN, yPos);

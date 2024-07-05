@@ -4,24 +4,28 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <utility>
 
+using Point = std::pair<float, float>;
 
 class Scatter {
 public:
-Scatter(
+    Scatter(
         float width, float height,
-        const std::string& xAxisName,const std::string& yAxisName,
+        const std::string& xAxisName, const std::string& yAxisName,
         float xScale, float yScale,
         float xStep, float yStep);
 
     void draw(sf::RenderWindow& window);
-    void addSetOfPoints(const std::vector<std::pair<float, float>>& points, sf::Color color, const std::string& legendName);
+    void addSetOfPoints(const std::string& legendName, std::vector<Point>& points, sf::Color color);
+    void updatePoints(const std::string& legendName, std::vector<Point>& points);
 
     sf::Vector2f map(float x, float y);
 
 private:
     void drawScales(sf::RenderWindow& window);
+    void drawPoints(sf::RenderWindow& window);
     void drawLegends(sf::RenderWindow& window);
 
     float width, height;
@@ -36,11 +40,9 @@ private:
     struct PointSet {
         std::vector<sf::CircleShape> points;
         sf::Color color;
-        std::string legendName;
     };
     
-    std::vector<PointSet> pointSets;
-
+    std::unordered_map<std::string, PointSet> pointSets;
 };
 
 #endif // Scatter_HPP
