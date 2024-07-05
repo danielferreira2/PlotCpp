@@ -1,12 +1,40 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include <vector>
 #include "Headers/Scatter.hpp"
 
 
+using Point = std::pair<float, float>; //alias para simplificar a leitura
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(500, 500), "Grafico x por y");
+    
+    sf::RenderWindow window(
+        sf::VideoMode(600,600),
+        "window"
+    );
+
     Scatter scatter(500, 500, "eixo X", "eixo Y", 20.0f, 20.0f, 5.0f, 5.0f);
+
+    std::vector<Point> blue_set = {
+        {1.0f,3.0f},
+        {12.0f,1.0f},
+        {5.0f,2.0f},
+        {1.0f,2.0f},
+
+
+    };
+
+    std::vector<Point> red_set = {
+        {4.5f,3.5f},
+        {1.0f,9.0f},
+        {6.0f,2.0f},
+        {9.0f,8.0f},
+        {5.0f,5.5f},
+        {7.0f,6.0f},
+        {1.0f,7.0f},
+    };
+    //atenção jamais chamar esse metodo dentro de um loop
+    scatter.addSetOfPoints(blue_set,sf::Color::Blue,"azuis");
+    scatter.addSetOfPoints(red_set,sf::Color::Red,"vermelhos");
+
 
     while (window.isOpen()) {
         sf::Event event;
@@ -17,23 +45,7 @@ int main() {
         }
 
         window.clear();
-
-        //desenhar eixos
         scatter.draw(window);
-
-        //desenhar qualquer coisa desde esteja que no intervalo de pontos mapeados
-        sf::Vector2f mappedPoint = scatter.map(5.f, 5.f);
-        sf::CircleShape point(3);
-        point.setFillColor(sf::Color::Red);
-        point.setPosition(mappedPoint);
-
-        sf::Vector2f mappedPoint2 = scatter.map(15.f, 10.f);
-        sf::RectangleShape point2(sf::Vector2f(6,6));
-        point2.setFillColor(sf::Color::Blue);
-        point2.setPosition(mappedPoint2);
-
-        window.draw(point);
-        window.draw(point2);
 
         window.display();
     }

@@ -1,9 +1,16 @@
 #include "Headers/Scatter.hpp"
 #include <iostream>
 
-Scatter::Scatter(float width, float height, const std::string& xAxisName, const std::string& yAxisName, float xScale, float yScale, float xStep, float yStep)
-    : width(width), height(height), xAxisName(xAxisName), yAxisName(yAxisName), xScale(xScale), yScale(yScale), xStep(xStep), yStep(yStep), AXIS_MARGIN(50) {
-        
+Scatter::Scatter(
+    float width, float height,
+    const std::string& xAxisName, const std::string& yAxisName,
+    float xScale, float yScale, float xStep, float yStep):
+    width(width), height(height),
+    xAxisName(xAxisName), yAxisName(yAxisName),
+    xScale(xScale), yScale(yScale),
+    xStep(xStep), yStep(yStep),
+    AXIS_MARGIN(50){    
+
     const int AXIS_THICKNESS = 2;
     const int LABEL_SIZE = 15;
     const int X_AXIS_LABEL_OFFSET_X = 10;
@@ -20,8 +27,8 @@ Scatter::Scatter(float width, float height, const std::string& xAxisName, const 
     yAxis.setFillColor(sf::Color::White);
 
     if (!font.loadFromFile("Fonts/Roboto-Regular.ttf")) {
-
-        std::cout << "Fonte não encontrada!\n É preciso que exista um diretorio /Fonts com os arquivos de extensão .ttf\n";
+        std::cerr << "Fonte não encontrada! Verifique se o arquivo está no diretório correto." << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     xAxisLabel.setFont(font);
@@ -44,10 +51,56 @@ void Scatter::draw(sf::RenderWindow& window) {
     window.draw(yAxisLabel);
 
     drawScales(window);
+
+    for (const auto& set : pointSets) {
+        for (const auto& point : set.points) {
+            window.draw(point);
+        }
+    }
+
+    drawLegends(window);
+ 
 }
 
-//importante
-//mapeia valores para escala do grafico
+void Scatter::addSetOfPoints(const std::vector<std::pair<float, float>>& points, sf::Color color, const std::string& legendName) {
+    PointSet pointSet;
+    pointSet.color = color;
+    pointSet.legendName = legendName;
+
+    for (const auto& p : points) {
+        sf::CircleShape point(5.0f); // tamanho do ponto
+        point.setFillColor(color); // cor do ponto
+        point.setPosition(map(p.first, p.second));
+        pointSet.points.push_back(point);
+    }
+    pointSets.push_back(pointSet);
+}
+
+
+void Scatter::drawLegends(sf::RenderWindow& window){
+    const int LEGEND_BOX_SIZE = 10;
+    const int LEGEND_TEXT_SIZE = 12;
+    sf::Text legendText;
+    legendText.setFont(font);
+    legendText.setCharacterSize(LEGEND_TEXT_SIZE);
+    legendText.setFillColor(sf::Color::White);
+
+    float legendY = AXIS_MARGIN;
+    for (const auto& set : pointSets) {
+        sf::RectangleShape legendBox(sf::Vector2f(LEGEND_BOX_SIZE, LEGEND_BOX_SIZE));
+        legendBox.setFillColor(set.color);
+        legendBox.setPosition(width - AXIS_MARGIN + 10, legendY);
+        window.draw(legendBox);
+
+        legendText.setString(set.legendName);
+        legendText.setPosition(width - AXIS_MARGIN + 10 + LEGEND_BOX_SIZE + 5, legendY - (LEGEND_TEXT_SIZE / 4));
+        window.draw(legendText);
+
+        legendY += LEGEND_BOX_SIZE + 15; // Aumentado o espaçamento entre legendas
+    }
+}
+
+
 sf::Vector2f Scatter::map(float x, float y) {
     float x1 = AXIS_MARGIN + (x / xScale) * (width - 2 * AXIS_MARGIN);
     float y1 = height - AXIS_MARGIN - (y / yScale) * (height - 2 * AXIS_MARGIN);
