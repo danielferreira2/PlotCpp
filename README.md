@@ -38,7 +38,7 @@ Aplicação gráfica simples para fins de aprendizado/relembrar a linguagem C++ 
 
 ## ScreenShots
 
-![Screenshot 10](Screenshots/screenshot9.png)
+![Screenshot 10](Screenshots/screenshot10.png)
 ![Screenshot 9](Screenshots/screenshot9.png)
 ![Screenshot 1](Screenshots/screenshot1.png)
 ![Screenshot 2](Screenshots/screenshot2.png)
