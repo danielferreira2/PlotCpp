@@ -2,8 +2,8 @@
 
 Aplicação gráfica simples para fins de aprendizado/relembrar a linguagem C++ em conjunto da biblioteca gráfica SFML (Simple and Fast Multimedia Library).
 
-- **Scatter.hpp**: Declaração da classe `Scatter`, responsável por desenhar os eixos e escalas, além de mapear os pontos para o gráfico.
-- **Scatter.cpp**: Implementação da classe `Scatter`.
+- **Scatter.hpp**: Declaração da classe `Scatter`.
+- **Scatter.cpp**: Implementação da classe `Scatter` capaz de plotar uma lista de conjuntos pontos representados por pares <float,float>, devidamente mapeados.
 - **Makefile**: Arquivo de configuração para compilação do projeto.
 
 ## Requisitos
