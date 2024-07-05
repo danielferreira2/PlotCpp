@@ -27,13 +27,18 @@ int main() {
         {1.0f,9.0f},
         {6.0f,2.0f},
         {9.0f,8.0f},
+    };
+
+    std::vector<Point> yello_set ={
         {5.0f,5.5f},
         {7.0f,6.0f},
         {1.0f,7.0f},
     };
-    //atenção jamais chamar esse metodo dentro de um loop
+
+    //atenção jamais chamar esse metodos dentro de um loop
     scatter.addSetOfPoints(blue_set,sf::Color::Blue,"azuis");
     scatter.addSetOfPoints(red_set,sf::Color::Red,"vermelhos");
+    scatter.addSetOfPoints(yello_set,sf::Color::Yellow,"amarelos");
 
 
     while (window.isOpen()) {
