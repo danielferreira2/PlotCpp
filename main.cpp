@@ -41,6 +41,9 @@ int main() {
     scatter.addSetOfPoints(yello_set,sf::Color::Yellow,"amarelos");
 
 
+    
+
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -50,7 +53,12 @@ int main() {
         }
 
         window.clear();
+
+       
+
         scatter.draw(window);
+  
+        
 
         window.display();
     }
