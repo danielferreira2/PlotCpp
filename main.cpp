@@ -36,35 +36,62 @@ void convergeToCenter(std::vector<Point>& points, float convergeStep) {
 int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Plot dinamico");
 
-    Scatter scatter(800, 800, "Eixo X", "Eixo Y", 20.0f, 20.0f, 5.0f, 5.0f);
-
+    Scatter scatter(800, 800, "Eixo X", "Eixo Y", 20.0f, 20.0f, 1.0f, 1.0f);
     std::vector<Point> blue_set = {
         {1.0f, 3.0f},
         {12.0f, 1.0f},
         {5.0f, 3.0f},
-        {3.0f, 2.0f}
+        {3.0f, 2.0f},
+        {6.0f, 7.0f},
+        {7.0f, 8.0f},
+        {8.0f, 5.0f},
+        {2.0f, 1.5f},
+        {9.0f, 4.0f},
+        {10.0f, 2.0f}
     };
 
     std::vector<Point> red_set = {
         {4.5f, 3.5f},
         {1.0f, 9.0f},
         {6.0f, 2.0f},
+        {2.0f, 8.0f},
+        {5.0f, 7.0f},
+        {3.0f, 6.0f},
+        {7.0f, 3.0f},
+        {4.0f, 9.5f},
+        {8.0f, 2.0f},
+        {9.0f, 1.0f}
     };
-    std::vector<Point> yello_set ={
+
+    std::vector<Point> yellow_set = {
         {9.0f, 8.0f},
         {5.0f, 5.5f},
         {7.0f, 6.0f},
-        {1.0f, 7.0f}
+        {1.0f, 7.0f},
+        {2.0f, 6.5f},
+        {3.0f, 5.0f},
+        {4.0f, 4.5f},
+        {8.0f, 7.0f},
+        {6.0f, 5.5f},
+        {10.0f, 8.0f}
     };
 
-    std::vector<Point> pink_set ={
+    std::vector<Point> pink_set = {
         {10.0f, 6.0f},
-        {12.0f, 7.0f}
+        {12.0f, 7.0f},
+        {11.0f, 8.0f},
+        {13.0f, 6.5f},
+        {9.0f, 7.5f},
+        {14.0f, 5.5f},
+        {15.0f, 6.0f},
+        {16.0f, 7.0f},
+        {13.0f, 8.0f},
+        {12.5f, 6.5f}
     };
 
     scatter.addSetOfPoints("azuis", blue_set, sf::Color::Blue);
     scatter.addSetOfPoints("vermelhos", red_set, sf::Color::Red);
-    scatter.addSetOfPoints("amarelos",yello_set, sf::Color::Yellow);
+    scatter.addSetOfPoints("amarelos",yellow_set, sf::Color::Yellow);
     scatter.addSetOfPoints("rosas",pink_set,sf::Color::Magenta);
 
     while (window.isOpen()) {
@@ -76,19 +103,21 @@ int main() {
         }
 
         // Atualiza os pontos convergindo para o ponto médio (exemplo de alteração dinâmica)
-        // convergeToCenter(blue_set,0.001f);
-        // convergeToCenter(red_set,0.0001f);
-        // convergeToCenter(yello_set,0.0001f);
+        convergeToCenter(blue_set,0.0001f);
+        convergeToCenter(red_set,0.0001f);
+        convergeToCenter(yellow_set,0.0001f);
+        convergeToCenter(pink_set,0.0001f);
 
         // Atualiza os pontos expandindo do ponto médio (exemplo de alteração dinâmica)
         // expandFromCenter(blue_set,0.0001f);
         // expandFromCenter(red_set,0.0001f);
-        // expandFromCenter(yello_set,0.0001f);
+        // expandFromCenter(yellow_set,0.0001f);
+        // expandFromCenter(pink_set,0.0001f);
         
         //atualiza plot
         scatter.updatePoints("azuis", blue_set);
         scatter.updatePoints("vermelhos",red_set);
-        scatter.updatePoints("amarelos",yello_set);
+        scatter.updatePoints("amarelos",yellow_set);
         scatter.updatePoints("rosas",pink_set);
 
         window.clear();
