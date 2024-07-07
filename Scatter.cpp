@@ -9,14 +9,10 @@ Scatter::Scatter(
     xAxisName(xAxisName), yAxisName(yAxisName),
     xScale(xScale), yScale(yScale),
     xStep(xStep), yStep(yStep),
-    AXIS_MARGIN(50){
+    AXIS_MARGIN(75), POINT_SIZE(5.0f){
 
     const int AXIS_THICKNESS = 2;
     const int LABEL_SIZE = 15;
-    const int X_AXIS_LABEL_OFFSET_X = 10;
-    const int X_AXIS_LABEL_OFFSET_Y = 10;
-    const int Y_AXIS_LABEL_OFFSET_X = 10;
-    const int Y_AXIS_LABEL_OFFSET_Y = 10;
 
     xAxis.setSize(sf::Vector2f(width - 2 * AXIS_MARGIN, AXIS_THICKNESS));
     xAxis.setPosition(AXIS_MARGIN, height - AXIS_MARGIN);
@@ -35,13 +31,15 @@ Scatter::Scatter(
     xAxisLabel.setString(xAxisName);
     xAxisLabel.setCharacterSize(LABEL_SIZE);
     xAxisLabel.setFillColor(sf::Color::White);
-    xAxisLabel.setPosition(width - AXIS_MARGIN - X_AXIS_LABEL_OFFSET_X, height - AXIS_MARGIN + X_AXIS_LABEL_OFFSET_Y);
+    xAxisLabel.setPosition(width / 2 - xAxisLabel.getLocalBounds().width / 2, height - AXIS_MARGIN / 2);
 
     yAxisLabel.setFont(font);
     yAxisLabel.setString(yAxisName);
     yAxisLabel.setCharacterSize(LABEL_SIZE);
     yAxisLabel.setFillColor(sf::Color::White);
-    yAxisLabel.setPosition(AXIS_MARGIN - Y_AXIS_LABEL_OFFSET_X, Y_AXIS_LABEL_OFFSET_Y);
+    yAxisLabel.setPosition(AXIS_MARGIN - AXIS_MARGIN / 2, height / 2);
+    yAxisLabel.setRotation(-90); 
+    yAxisLabel.setOrigin(0, yAxisLabel.getLocalBounds().width / 2);
 }
 
 void Scatter::draw(sf::RenderWindow& window) {
@@ -82,7 +80,7 @@ void Scatter::drawLegends(sf::RenderWindow& window) {
         legendText.setPosition(width - AXIS_MARGIN + 10 + LEGEND_BOX_SIZE + 5, legendY - (LEGEND_TEXT_SIZE / 4));
         window.draw(legendText);
 
-        legendY += LEGEND_BOX_SIZE + 15; // Aumentado o espaçamento entre legendas
+        legendY += LEGEND_BOX_SIZE + 15; 
     }
 }
 
@@ -91,8 +89,9 @@ void Scatter::addSetOfPoints(const std::string& legendName, std::vector<Point>& 
     pointSet.color = color;
 
     for (const auto& p : points) {
-        sf::CircleShape point(5.0f); // tamanho do ponto
+        sf::CircleShape point(POINT_SIZE); // tamanho do ponto
         point.setFillColor(color); // cor do ponto
+        point.setOrigin(POINT_SIZE , POINT_SIZE ); // centra o ponto
         point.setPosition(map(p.first, p.second));
         pointSet.points.push_back(point);
     }
@@ -104,13 +103,15 @@ void Scatter::updatePoints(const std::string& legendName, std::vector<Point>& po
     if (it != pointSets.end()) {
         it->second.points.clear();
         for (const auto& p : points) {
-            sf::CircleShape point(5.0f); // tamanho do ponto
+            sf::CircleShape point(POINT_SIZE); // tamanho do ponto
             point.setFillColor(it->second.color); // cor do ponto
+            point.setOrigin(POINT_SIZE , POINT_SIZE ); // centra o ponto
             point.setPosition(map(p.first, p.second));
             it->second.points.push_back(point);
         }
     }
 }
+
 
 sf::Vector2f Scatter::map(float x, float y) {
     float x1 = AXIS_MARGIN + (x / xScale) * (width - 2 * AXIS_MARGIN);
@@ -121,6 +122,8 @@ sf::Vector2f Scatter::map(float x, float y) {
 void Scatter::drawScales(sf::RenderWindow& window) {
     const int TICK_LENGTH = 5;
     const int LABEL_SIZE = 10;
+    const int LABEL_OFFSET = 5;
+    const sf::Color GRID_COLOR = sf::Color(200, 200, 200, 100); //cor cinza
 
     sf::Text label;
     label.setFont(font);
@@ -131,13 +134,21 @@ void Scatter::drawScales(sf::RenderWindow& window) {
         float xPos = AXIS_MARGIN + (x / xScale) * (width - 2 * AXIS_MARGIN);
         sf::Vector2f tickPos(xPos, height - AXIS_MARGIN);
 
+        //linha do grid
+        sf::RectangleShape gridLine(sf::Vector2f(1, height - 2 * AXIS_MARGIN));
+        gridLine.setPosition(sf::Vector2f(xPos, AXIS_MARGIN));
+        gridLine.setFillColor(GRID_COLOR);
+        window.draw(gridLine);
+
+        //ticks
         sf::RectangleShape tick(sf::Vector2f(1, TICK_LENGTH));
         tick.setPosition(tickPos);
         tick.setFillColor(sf::Color::White);
         window.draw(tick);
 
+        //labels
         label.setString(std::to_string(static_cast<int>(x)));
-        label.setPosition(tickPos.x, tickPos.y + TICK_LENGTH);
+        label.setPosition(tickPos.x - LABEL_OFFSET, tickPos.y + TICK_LENGTH + LABEL_OFFSET);
         window.draw(label);
     }
 
@@ -145,13 +156,21 @@ void Scatter::drawScales(sf::RenderWindow& window) {
         float yPos = height - AXIS_MARGIN - (y / yScale) * (height - 2 * AXIS_MARGIN);
         sf::Vector2f tickPos(AXIS_MARGIN, yPos);
 
+        //linha do grid
+        sf::RectangleShape gridLine(sf::Vector2f(width - 2 * AXIS_MARGIN, 1));
+        gridLine.setPosition(sf::Vector2f(AXIS_MARGIN, yPos));
+        gridLine.setFillColor(GRID_COLOR);
+        window.draw(gridLine);
+
+        //ticks
         sf::RectangleShape tick(sf::Vector2f(TICK_LENGTH, 1));
         tick.setPosition(tickPos);
         tick.setFillColor(sf::Color::White);
         window.draw(tick);
 
+        //labels
         label.setString(std::to_string(static_cast<int>(y)));
-        label.setPosition(tickPos.x - TICK_LENGTH * 2, tickPos.y - LABEL_SIZE / 2);
+        label.setPosition(tickPos.x - TICK_LENGTH - LABEL_OFFSET * 2, tickPos.y - LABEL_SIZE / 2);
         window.draw(label);
     }
 }

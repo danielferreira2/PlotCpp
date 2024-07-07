@@ -36,6 +36,7 @@ private:
     sf::Font font;
     sf::Text xAxisLabel, yAxisLabel;
     const int AXIS_MARGIN;
+    const float POINT_SIZE;
 
     struct PointSet {
         std::vector<sf::CircleShape> points;

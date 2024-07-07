@@ -34,9 +34,9 @@ void convergeToCenter(std::vector<Point>& points, float convergeStep) {
 }
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(600, 600), "Plot dinamico");
+    sf::RenderWindow window(sf::VideoMode(900, 800), "Plot dinamico");
 
-    Scatter scatter(500, 500, "Eixo X", "Eixo Y", 20.0f, 20.0f, 5.0f, 5.0f);
+    Scatter scatter(800, 800, "Eixo X", "Eixo Y", 20.0f, 20.0f, 5.0f, 5.0f);
 
     std::vector<Point> blue_set = {
         {1.0f, 3.0f},
@@ -57,9 +57,15 @@ int main() {
         {1.0f, 7.0f}
     };
 
+    std::vector<Point> pink_set ={
+        {10.0f, 6.0f},
+        {12.0f, 7.0f}
+    };
+
     scatter.addSetOfPoints("azuis", blue_set, sf::Color::Blue);
     scatter.addSetOfPoints("vermelhos", red_set, sf::Color::Red);
     scatter.addSetOfPoints("amarelos",yello_set, sf::Color::Yellow);
+    scatter.addSetOfPoints("rosas",pink_set,sf::Color::Magenta);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -70,19 +76,20 @@ int main() {
         }
 
         // Atualiza os pontos convergindo para o ponto médio (exemplo de alteração dinâmica)
-        // convergeToCenter(blue_set,0.0001f);
+        // convergeToCenter(blue_set,0.001f);
         // convergeToCenter(red_set,0.0001f);
         // convergeToCenter(yello_set,0.0001f);
 
         // Atualiza os pontos expandindo do ponto médio (exemplo de alteração dinâmica)
-        expandFromCenter(blue_set,0.0001f);
-        expandFromCenter(red_set,0.0001f);
-        expandFromCenter(yello_set,0.0001f);
+        // expandFromCenter(blue_set,0.0001f);
+        // expandFromCenter(red_set,0.0001f);
+        // expandFromCenter(yello_set,0.0001f);
         
         //atualiza plot
         scatter.updatePoints("azuis", blue_set);
         scatter.updatePoints("vermelhos",red_set);
         scatter.updatePoints("amarelos",yello_set);
+        scatter.updatePoints("rosas",pink_set);
 
         window.clear();
         scatter.draw(window);
