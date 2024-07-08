@@ -12,6 +12,7 @@ using Point = std::pair<float, float>;
 class Scatter {
 public:
     Scatter(
+        float pos_x, float pos_y,
         float width, float height,
         const std::string& xAxisName, const std::string& yAxisName,
         float xScale, float yScale,
@@ -28,6 +29,7 @@ private:
     void drawPoints(sf::RenderWindow& window);
     void drawLegends(sf::RenderWindow& window);
 
+    float pos_x, pos_y;
     float width, height;
     std::string xAxisName, yAxisName;
     float xScale, yScale;
